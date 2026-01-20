@@ -1,0 +1,171 @@
+.match {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.match:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.match-complete {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f8f4 100%);
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.match-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.skip-button {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.skip-button:hover {
+  background: #f57c00;
+}
+
+.match-video {
+  margin-bottom: 15px;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 315px;
+  display: block;
+}
+
+.watch-prompt {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #fff3cd;
+  border-radius: 6px;
+  border-left: 4px solid #ff9800;
+}
+
+.match-result {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.result-content {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.winner {
+  margin-bottom: 10px;
+}
+
+.winner-label,
+.loser-label {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.winner-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.loser {
+  opacity: 0.9;
+}
+
+.loser-name {
+  font-size: 1rem;
+}
+
+.match-players {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  gap: 15px;
+}
+
+.player {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.player.winner {
+  background: #4caf50;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.player.loser {
+  background: #f44336;
+  color: white;
+  opacity: 0.8;
+}
+
+.vs {
+  font-weight: 700;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .match {
+    padding: 15px;
+  }
+
+  .video-container iframe {
+    height: 250px;
+  }
+
+  .match-players {
+    flex-direction: column;
+  }
+
+  .vs {
+    transform: rotate(90deg);
+  }
+}
