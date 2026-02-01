@@ -42,13 +42,15 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const winner = matchup.winnerId === player1?.id ? player1 : player2;
-  const loser = matchup.winnerId === player1?.id ? player2 : player1;
+  // outcome is a string, so we need to compare it as a string
+  const winnerId = matchup.outcome ? String(matchup.outcome) : null;
+  const winner = winnerId === String(player1?.id) ? player1 : winnerId === String(player2?.id) ? player2 : null;
+  const loser = winnerId === String(player1?.id) ? player2 : winnerId === String(player2?.id) ? player1 : null;
 
   return (
     <div className={`match ${showResult ? 'match-complete' : ''}`}>
       <div className="match-header">
-        <h3>Match {matchup.id}</h3>
+        <h3>Match {matchup.number || matchup.id}</h3>
         {!showResult && (
           <button className="skip-button" onClick={handleSkip}>
             Skip
@@ -65,8 +67,8 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
                 ref={iframeRef}
                 width="560"
                 height="315"
-                src={`${matchup.videoUrl}?enablejsapi=1`}
-                title={`Match ${matchup.id}`}
+                src={`${matchup.youtube_url}?enablejsapi=1`}
+                title={`Match ${matchup.number || matchup.id}`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -90,8 +92,8 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
               <iframe
                 width="560"
                 height="315"
-                src={matchup.videoUrl}
-                title={`Match ${matchup.id}`}
+                src={matchup.youtube_url}
+                title={`Match ${matchup.number || matchup.id}`}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

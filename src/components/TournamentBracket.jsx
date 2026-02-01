@@ -65,20 +65,23 @@ function TournamentBracket() {
   }
 
   // Group matchups by round
+  // If round is not provided, we'll need to calculate it from number or use a default
   const matchupsByRound = tournamentData.matchups.reduce((acc, matchup) => {
-    if (!acc[matchup.round]) {
-      acc[matchup.round] = [];
+    // Use round if provided, otherwise calculate from number (assuming tournament structure)
+    const round = matchup.round || (matchup.number ? Math.ceil(Math.log2(matchup.number + 1)) : 1);
+    if (!acc[round]) {
+      acc[round] = [];
     }
-    acc[matchup.round].push(matchup);
+    acc[round].push(matchup);
     return acc;
   }, {});
 
   const rounds = Object.keys(matchupsByRound).sort((a, b) => a - b);
   const maxRound = Math.max(...rounds.map(Number));
 
-  // Create a map of contenders by ID for quick lookup
-  const contendersMap = tournamentData.contenders.reduce((acc, contender) => {
-    acc[contender.id] = contender;
+  // Create a map of contestants by ID for quick lookup
+  const contestantsMap = tournamentData.contestants.reduce((acc, contestant) => {
+    acc[contestant.id] = contestant;
     return acc;
   }, {});
 
@@ -112,8 +115,8 @@ function TournamentBracket() {
               </div>
               <div className="matches-container">
                 {matchups.map((matchup) => {
-                  const player1 = contendersMap[matchup.player1Id];
-                  const player2 = contendersMap[matchup.player2Id];
+                  const player1 = contestantsMap[matchup.contestant_one_id];
+                  const player2 = contestantsMap[matchup.contestant_two_id];
                   const isWatched = watchedMatches.has(matchup.id);
 
                   return (
