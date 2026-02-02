@@ -1,0 +1,137 @@
+.bracket-view {
+  width: 100%;
+  padding: 20px;
+}
+
+.bracket-round-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.bracket-round-header h2 {
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.bracket-matches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.bracket-matchup {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bracket-matchup:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+}
+
+.bracket-matchup.matchup-watched {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f8f4 100%);
+}
+
+.bracket-matchup.matchup-complete {
+  border-color: #4caf50;
+  border-width: 3px;
+}
+
+.matchup-number {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #667eea;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.matchup-contestants {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.matchup-contestant {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.matchup-contestant.winner {
+  background: #4caf50;
+  color: white;
+  border-color: #45a049;
+  font-weight: 700;
+}
+
+.matchup-contestant.loser {
+  background: #f44336;
+  color: white;
+  opacity: 0.8;
+  border-color: #d32f2f;
+}
+
+.matchup-vs {
+  text-align: center;
+  font-weight: 700;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.matchup-result-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.result-badge {
+  display: inline-block;
+  background: #4caf50;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .bracket-matches {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .bracket-round-header h2 {
+    font-size: 1.5rem;
+    padding: 12px;
+  }
+}

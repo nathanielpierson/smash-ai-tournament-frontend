@@ -15,13 +15,33 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
  */
 export const fetchTournamentData = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/tournament`);
+    const response = await fetch(`${API_BASE_URL}/matchups`);
     if (!response.ok) {
       throw new Error('Failed to fetch tournament data');
     }
-    return await response.json();
+    const data = await response.json();
+    
+    // Handle different response structures
+    // If the response is an array of matchups, wrap it in the expected structure
+    if (Array.isArray(data)) {
+      return {
+        matchups: data,
+        contestants: [], // Will need to fetch separately or extract from matchups
+      };
+    }
+    
+    // If it's an object but missing matchups/contestants, ensure they exist
+    return {
+      matchups: data.matchups || [],
+      contestants: data.contestants || [],
+      ...data, // Include any other properties
+    };
   } catch (error) {
-    console.error('Error fetching tournament data:', error);
+    // Silently fall back to mock data for development
+    // Only log if you want to see when the API is unavailable
+    if (import.meta.env.DEV) {
+      console.log('Using mock tournament data (backend unavailable)');
+    }
     // Return mock data for development
     return getMockTournamentData();
   }
