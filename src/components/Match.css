@@ -19,15 +19,18 @@
 
 .match-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 15px;
+  position: relative;
 }
 
 .match-header h3 {
   margin: 0;
   color: #333;
   font-size: 1.2rem;
+  position: absolute;
+  left: 0;
 }
 
 .skip-button {
@@ -39,6 +42,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: background 0.2s;
+  margin: 0 auto;
 }
 
 .skip-button:hover {

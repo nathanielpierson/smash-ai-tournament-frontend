@@ -57,16 +57,22 @@ function TournamentBracket() {
   };
 
   // Group matchups by bracket and round (only if tournamentData exists and has matchups)
+  // Always use matchup.number (hardcoded 1-127) instead of matchup.id (auto-generated)
   const matchupsByBracketAndRound = tournamentData && tournamentData.matchups
     ? tournamentData.matchups.reduce((acc, matchup) => {
-        const { bracket, round } = getBracketAndRound(matchup.number || matchup.id);
+        const matchupNumber = matchup.number; // Use the hardcoded number field
+        if (!matchupNumber) {
+          console.warn('Matchup missing number field:', matchup);
+          return acc; // Skip matchups without a number
+        }
+        const { bracket, round } = getBracketAndRound(matchupNumber);
         const key = getRoundKey(bracket, round);
         if (!acc[key]) {
           acc[key] = {
             bracket,
             round,
             matchups: [],
-            displayName: getBracketAndRound(matchup.number || matchup.id).displayName,
+            displayName: getBracketAndRound(matchupNumber).displayName,
           };
         }
         acc[key].matchups.push(matchup);
@@ -132,6 +138,36 @@ function TournamentBracket() {
         return acc;
       }, {})
     : {};
+
+  // Debug: Log contestants map to see what we have
+  console.log('Contestants map:', contestantsMap);
+  console.log('Tournament data:', tournamentData);
+  
+  // Debug: Check a sample matchup to see what IDs it's using
+  if (tournamentData && tournamentData.matchups && tournamentData.matchups.length > 0) {
+    const sampleMatchup = tournamentData.matchups[0];
+    console.log('Sample matchup:', sampleMatchup);
+    console.log('All matchup keys:', Object.keys(sampleMatchup));
+    console.log('Matchup number:', sampleMatchup.number);
+    
+    // Check for all possible field name variations
+    console.log('contestant_one_id:', sampleMatchup.contestant_one_id);
+    console.log('contestant_two_id:', sampleMatchup.contestant_two_id);
+    console.log('contestantOneId:', sampleMatchup.contestantOneId);
+    console.log('contestantTwoId:', sampleMatchup.contestantTwoId);
+    console.log('contestant_one:', sampleMatchup.contestant_one);
+    console.log('contestant_two:', sampleMatchup.contestant_two);
+    console.log('contestantOne:', sampleMatchup.contestantOne);
+    console.log('contestantTwo:', sampleMatchup.contestantTwo);
+    
+    // If contestants are nested objects, extract their IDs
+    if (sampleMatchup.contestant_one && sampleMatchup.contestant_one.id) {
+      console.log('Found nested contestant_one with ID:', sampleMatchup.contestant_one.id);
+    }
+    if (sampleMatchup.contestant_two && sampleMatchup.contestant_two.id) {
+      console.log('Found nested contestant_two with ID:', sampleMatchup.contestant_two.id);
+    }
+  }
 
   const currentRoundKey = getRoundKey(currentBracket, currentRound);
   const currentRoundData = matchupsByBracketAndRound[currentRoundKey];
@@ -240,7 +276,7 @@ function TournamentBracket() {
           matchup={selectedMatchup}
           player1={contestantsMap[selectedMatchup.contestant_one_id]}
           player2={contestantsMap[selectedMatchup.contestant_two_id]}
-          isWatched={watchedMatches.has(selectedMatchup.id)}
+          isWatched={watchedMatches.has(selectedMatchup.number)}
           onClose={handleCloseModal}
           onMatchComplete={handleMatchComplete}
         />

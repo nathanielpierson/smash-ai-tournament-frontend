@@ -5,11 +5,16 @@ import './BracketView.css';
  * Similar to Challonge's bracket visualization
  */
 function BracketView({ matchups, contestantsMap, watchedMatches, onMatchupClick, currentRound, bracketType, roundDisplayName }) {
-  // Sort matchups by number for consistent display
-  const sortedMatchups = [...matchups].sort((a, b) => (a.number || a.id) - (b.number || b.id));
+  // Sort matchups by number (hardcoded field) for consistent display
+  const sortedMatchups = [...matchups].sort((a, b) => (a.number || 0) - (b.number || 0));
 
   const getContestantName = (contestantId) => {
+    if (!contestantId) return 'TBD';
     const contestant = contestantsMap[contestantId];
+    // Debug: Log when we can't find a contestant
+    if (!contestant) {
+      console.log(`Contestant not found for ID: ${contestantId}, available IDs:`, Object.keys(contestantsMap));
+    }
     return contestant?.name || 'TBD';
   };
 
@@ -30,7 +35,7 @@ function BracketView({ matchups, contestantsMap, watchedMatches, onMatchupClick,
         {sortedMatchups.map((matchup) => {
           const player1 = contestantsMap[matchup.contestant_one_id];
           const player2 = contestantsMap[matchup.contestant_two_id];
-          const isWatched = watchedMatches.has(matchup.id);
+          const isWatched = watchedMatches.has(matchup.number);
           const winnerId = getWinnerId(matchup);
           const player1Won = winnerId === matchup.contestant_one_id;
           const player2Won = winnerId === matchup.contestant_two_id;
@@ -42,7 +47,7 @@ function BracketView({ matchups, contestantsMap, watchedMatches, onMatchupClick,
               className={`bracket-matchup ${hasResult ? 'matchup-complete' : ''} ${isWatched ? 'matchup-watched' : ''}`}
               onClick={() => onMatchupClick(matchup)}
             >
-              <div className="matchup-number">#{matchup.number || matchup.id}</div>
+              <div className="matchup-number">#{matchup.number}</div>
               <div className="matchup-contestants">
                 <div
                   className={`matchup-contestant ${player1Won ? 'winner' : ''} ${hasResult && !player1Won ? 'loser' : ''}`}

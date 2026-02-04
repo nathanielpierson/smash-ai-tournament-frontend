@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { convertToEmbedUrl } from '../utils/youtubeUtils';
 import './Match.css';
 
 /**
@@ -21,7 +22,7 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
     setShowResult(true);
     setIsPlaying(false);
     if (onMatchComplete) {
-      onMatchComplete(matchup.id);
+      onMatchComplete(matchup.number);
     }
   };
 
@@ -42,7 +43,9 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  // outcome is a string, so we need to compare it as a string
+  // Convert YouTube URL to embed format
+  const embedUrl = matchup.youtube_url ? convertToEmbedUrl(matchup.youtube_url) : null;
+
   const winnerId = matchup.outcome ? String(matchup.outcome) : null;
   const winner = winnerId === String(player1?.id) ? player1 : winnerId === String(player2?.id) ? player2 : null;
   const loser = winnerId === String(player1?.id) ? player2 : winnerId === String(player2?.id) ? player1 : null;
@@ -50,7 +53,7 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
   return (
     <div className={`match ${showResult ? 'match-complete' : ''}`}>
       <div className="match-header">
-        <h3>Match {matchup.number || matchup.id}</h3>
+        <h3>Match {matchup.number}</h3>
         {!showResult && (
           <button className="skip-button" onClick={handleSkip}>
             Skip
@@ -61,19 +64,26 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
       <div className="match-video">
         {!showResult ? (
           <>
-            <p className="watch-prompt">Watch the match below, then click "Skip" to reveal the result</p>
+            <p className="watch-prompt">Watch the match below, then click "Skip" to reveal the result.
+              Or don't watch it and click "Skip" to spoil yourself. I won't judge you.</p>
             <div className="video-container">
-              <iframe
-                ref={iframeRef}
-                width="560"
-                height="315"
-                src={`${matchup.youtube_url}?enablejsapi=1`}
-                title={`Match ${matchup.number || matchup.id}`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                onLoad={handleVideoStart}
-              ></iframe>
+              {embedUrl ? (
+                <iframe
+                  ref={iframeRef}
+                  width="560"
+                  height="315"
+                  src={`${embedUrl}?enablejsapi=1`}
+                  title={`Match ${matchup.number}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  onLoad={handleVideoStart}
+                ></iframe>
+              ) : (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                  No video URL available for this match
+                </div>
+              )}
             </div>
           </>
         ) : (
@@ -89,15 +99,21 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
               </div>
             </div>
             <div className="video-container">
-              <iframe
-                width="560"
-                height="315"
-                src={matchup.youtube_url}
-                title={`Match ${matchup.number || matchup.id}`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              {embedUrl ? (
+                <iframe
+                  width="560"
+                  height="315"
+                  src={embedUrl}
+                  title={`Match ${matchup.number}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                  No video URL available for this match
+                </div>
+              )}
             </div>
           </div>
         )}
