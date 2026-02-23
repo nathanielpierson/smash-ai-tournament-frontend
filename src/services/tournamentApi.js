@@ -3,14 +3,19 @@
  * Replace the base URL with your actual backend URL
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+// In development, use relative /api so Vite proxies to Rails (avoids CORS).
+// Set VITE_API_BASE_URL in .env for production or a different backend URL.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const fetchTournamentData = async () => {
+  const matchupsUrl = `${API_BASE_URL}/matchups`;
+  const contestantsUrl = `${API_BASE_URL}/contestants`;
+  
   try {
     // Try to fetch both matchups and contestants
     const [matchupsResponse, contestantsResponse] = await Promise.allSettled([
-      fetch(`${API_BASE_URL}/matchups`),
-      fetch(`${API_BASE_URL}/contestants`).catch(() => null), // Try contestants endpoint, but don't fail if it doesn't exist
+      fetch(matchupsUrl),
+      fetch(contestantsUrl).catch(() => null), // Try contestants endpoint, but don't fail if it doesn't exist
     ]);
     
     let data = null;
@@ -21,7 +26,11 @@ export const fetchTournamentData = async () => {
       data = await matchupsResponse.value.json();
       console.log('Matchups data received from backend:', data);
     } else {
-      throw new Error('Failed to fetch matchups data');
+      const reason = matchupsResponse.status === 'rejected'
+        ? matchupsResponse.reason
+        : matchupsResponse.value?.statusText || `HTTP ${matchupsResponse.value?.status}`;
+      console.error('Matchups fetch failed:', { url: matchupsUrl, reason });
+      throw new Error(`Failed to fetch matchups: ${reason?.message || reason}`);
     }
     
     // Handle contestants response (if endpoint exists)
@@ -138,13 +147,16 @@ export const fetchTournamentData = async () => {
     }
     return formattedData;
   } catch (error) {
-    // Silently fall back to mock data for development
-    // Only log if you want to see when the API is unavailable
-    if (import.meta.env.DEV) {
-      console.log('Using mock tournament data (backend unavailable)');
-    }
-    // Return mock data for development
-    return getMockTournamentData();
+    // Log so you can see why the backend isn't being used
+    console.error('Tournament API error:', error);
+    console.error('Requested URL:', matchupsUrl);
+    console.error('If you see this, the app is not receiving data from the backend. Check:');
+    console.error('  1. Backend is running (e.g. rails s)');
+    console.error('  2. API base URL is correct. Current:', API_BASE_URL);
+    console.error('  3. CORS allows your frontend origin (if frontend and backend are different ports)');
+    console.error('  4. Routes exist: GET /api/matchups and GET /api/contestants');
+    // Re-throw so the UI shows the error instead of silently showing mock data
+    throw error;
   }
 };
 
