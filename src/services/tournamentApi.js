@@ -1,11 +1,14 @@
 /**
  * API service for fetching tournament data from the backend
- * Replace the base URL with your actual backend URL
  */
 
-// In development, use relative /api so Vite proxies to Rails (avoids CORS).
-// Set VITE_API_BASE_URL in .env for production or a different backend URL.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const PRODUCTION_API_BASE = 'https://smash-ai-tournament-backend.onrender.com/api';
+
+// Development: use relative /api so Vite proxies to Rails (avoids CORS).
+// Production: use Render backend. Override with VITE_API_BASE_URL in .env if needed.
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  (import.meta.env.PROD ? PRODUCTION_API_BASE : '/api');
 
 export const fetchTournamentData = async () => {
   const matchupsUrl = `${API_BASE_URL}/matchups`;
