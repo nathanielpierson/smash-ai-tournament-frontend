@@ -74,25 +74,31 @@
 }
 
 .matchup-contestant {
+  position: relative;
+  padding: 12px 12px 12px 59px;
+  min-height: 51px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
   background: #f5f5f5;
   border-radius: 6px;
   font-weight: 600;
-  text-align: center;
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
 
 .matchup-contestant-name {
-  flex: 1;
-  min-width: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 60px);
+  text-align: center;
 }
 
 .contestant-character-icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
   width: 51px;
   height: 51px;
   min-width: 51px;
