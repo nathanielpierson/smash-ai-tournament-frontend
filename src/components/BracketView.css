@@ -74,6 +74,10 @@
 }
 
 .matchup-contestant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   padding: 12px;
   background: #f5f5f5;
   border-radius: 6px;
@@ -81,6 +85,20 @@
   text-align: center;
   transition: all 0.3s ease;
   border: 2px solid transparent;
+}
+
+.matchup-contestant-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.contestant-character-icon {
+  width: 51px;
+  height: 51px;
+  min-width: 51px;
+  min-height: 51px;
+  object-fit: contain;
+  border-radius: 4px;
 }
 
 .matchup-contestant.winner {

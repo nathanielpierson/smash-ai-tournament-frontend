@@ -1,28 +1,46 @@
-import './BracketView.css';
+import { resolveImageUrl } from "../services/tournamentApi";
+import "./BracketView.css";
 
 /**
  * BracketView component that displays a tournament bracket structure
  * Similar to Challonge's bracket visualization
  */
-function BracketView({ matchups, contestantsMap, watchedMatches, onMatchupClick, currentRound, bracketType, roundDisplayName }) {
+function BracketView({
+  matchups,
+  contestantsMap,
+  watchedMatches,
+  onMatchupClick,
+  currentRound,
+  bracketType,
+  roundDisplayName,
+}) {
   // Sort matchups by number (hardcoded field) for consistent display
-  const sortedMatchups = [...matchups].sort((a, b) => (a.number || 0) - (b.number || 0));
+  const sortedMatchups = [...matchups].sort(
+    (a, b) => (a.number || 0) - (b.number || 0),
+  );
 
   const getContestantName = (contestantId) => {
-    if (!contestantId) return 'TBD';
+    if (!contestantId) return "TBD";
     const contestant = contestantsMap[contestantId];
-    // Debug: Log when we can't find a contestant
-    if (!contestant) {
-      console.log(`Contestant not found for ID: ${contestantId}, available IDs:`, Object.keys(contestantsMap));
-    }
-    return contestant?.name || 'TBD';
+    if (!contestant) return "TBD";
+    return contestant.name || "TBD";
+  };
+
+  // Character icon from backend (contestants.icon_image)
+  const getContestantIconUrl = (contestantId) => {
+    if (!contestantId) return null;
+    const c = contestantsMap[contestantId];
+    if (!c?.icon_image) return null;
+    return resolveImageUrl(c.icon_image);
   };
 
   const getWinnerId = (matchup) => {
     if (!matchup.outcome) return null;
     const outcomeStr = String(matchup.outcome);
-    if (outcomeStr === String(matchup.contestant_one_id)) return matchup.contestant_one_id;
-    if (outcomeStr === String(matchup.contestant_two_id)) return matchup.contestant_two_id;
+    if (outcomeStr === String(matchup.contestant_one_id))
+      return matchup.contestant_one_id;
+    if (outcomeStr === String(matchup.contestant_two_id))
+      return matchup.contestant_two_id;
     return null;
   };
 
@@ -44,21 +62,39 @@ function BracketView({ matchups, contestantsMap, watchedMatches, onMatchupClick,
           return (
             <div
               key={matchup.id}
-              className={`bracket-matchup ${hasResult ? 'matchup-complete' : ''} ${isWatched ? 'matchup-watched' : ''}`}
+              className={`bracket-matchup ${hasResult ? "matchup-complete" : ""} ${isWatched ? "matchup-watched" : ""}`}
               onClick={() => onMatchupClick(matchup)}
             >
               <div className="matchup-number">#{matchup.number}</div>
               <div className="matchup-contestants">
                 <div
-                  className={`matchup-contestant ${player1Won ? 'winner' : ''} ${hasResult && !player1Won ? 'loser' : ''}`}
+                  className={`matchup-contestant ${player1Won ? "winner" : ""} ${hasResult && !player1Won ? "loser" : ""}`}
                 >
-                  {getContestantName(matchup.contestant_one_id)}
+                  {getContestantIconUrl(matchup.contestant_one_id) && (
+                    <img
+                      src={getContestantIconUrl(matchup.contestant_one_id)}
+                      alt=""
+                      className="contestant-character-icon"
+                    />
+                  )}
+                  <span className="matchup-contestant-name">
+                    {getContestantName(matchup.contestant_one_id)}
+                  </span>
                 </div>
                 <div className="matchup-vs">vs</div>
                 <div
-                  className={`matchup-contestant ${player2Won ? 'winner' : ''} ${hasResult && !player2Won ? 'loser' : ''}`}
+                  className={`matchup-contestant ${player2Won ? "winner" : ""} ${hasResult && !player2Won ? "loser" : ""}`}
                 >
-                  {getContestantName(matchup.contestant_two_id)}
+                  {getContestantIconUrl(matchup.contestant_two_id) && (
+                    <img
+                      src={getContestantIconUrl(matchup.contestant_two_id)}
+                      alt=""
+                      className="contestant-character-icon"
+                    />
+                  )}
+                  <span className="matchup-contestant-name">
+                    {getContestantName(matchup.contestant_two_id)}
+                  </span>
                 </div>
               </div>
               {hasResult && (
