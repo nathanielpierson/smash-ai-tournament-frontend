@@ -15,7 +15,7 @@ export function getBracketAndRound(matchupNumber) {
 
   // Winner's Bracket
   if (matchupNumber >= 1 && matchupNumber <= 32) {
-    return { bracket: 'winners', round: 1, displayName: "Winner's Bracket Round 1" };
+    return { bracket: 'winners', round: 1, displayName: 'Round of 64' };
   }
   if (matchupNumber >= 49 && matchupNumber <= 64) {
     return { bracket: 'winners', round: 2, displayName: "Winner's Bracket Round 2" };
