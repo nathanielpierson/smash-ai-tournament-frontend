@@ -43,7 +43,9 @@ export const fetchTournamentData = async () => {
     // Handle matchups response
     if (matchupsResponse.status === "fulfilled" && matchupsResponse.value.ok) {
       data = await matchupsResponse.value.json();
-      console.log("Matchups data received from backend:", data);
+      if (import.meta.env.PROD) {
+        console.log("Matchups data received from backend:", data);
+      }
     } else {
       const reason =
         matchupsResponse.status === "rejected"
@@ -61,11 +63,15 @@ export const fetchTournamentData = async () => {
       contestantsResponse.value.ok
     ) {
       contestants = await contestantsResponse.value.json();
-      console.log("Contestants data received from backend:", contestants);
+      if (import.meta.env.PROD) {
+        console.log("Contestants data received from backend:", contestants);
+      }
     } else {
-      console.log(
-        "No separate contestants endpoint found, will try to extract from matchups",
-      );
+      if (import.meta.env.PROD) {
+        console.log(
+          "No separate contestants endpoint found, will try to extract from matchups",
+        );
+      }
     }
 
     // Normalize matchup data - ensure contestant_one_id and contestant_two_id are present
