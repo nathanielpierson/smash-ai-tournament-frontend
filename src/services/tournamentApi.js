@@ -16,14 +16,24 @@ const BACKEND_ORIGIN =
   import.meta.env.VITE_API_ORIGIN ??
   (import.meta.env.PROD ? PRODUCTION_ORIGIN : "http://localhost:3000");
 
-/** Resolve image URL; prepend backend origin if relative. */
+/** Resolve image URL; prepend backend origin if relative or bare filename. */
 export function resolveImageUrl(url) {
   if (!url || typeof url !== "string") return null;
   const trimmed = url.trim();
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
+
+  // Absolute URL already
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     return trimmed;
-  if (trimmed.startsWith("/")) return `${BACKEND_ORIGIN}${trimmed}`;
-  return trimmed;
+  }
+
+  // Path relative to backend origin
+  if (trimmed.startsWith("/")) {
+    return `${BACKEND_ORIGIN}${trimmed}`;
+  }
+
+  // Bare filename or relative path like "slippery-kong-icon.png"
+  // Treat as hosted at the backend origin root in production.
+  return `${BACKEND_ORIGIN}/${trimmed.replace(/^\.?\//, "")}`;
 }
 
 export const fetchTournamentData = async () => {
