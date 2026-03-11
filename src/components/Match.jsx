@@ -46,9 +46,35 @@ function Match({ matchup, player1, player2, onMatchComplete, isWatched }) {
   // Convert YouTube URL to embed format
   const embedUrl = matchup.youtube_url ? convertToEmbedUrl(matchup.youtube_url) : null;
 
-  const winnerId = matchup.outcome ? String(matchup.outcome) : null;
-  const winner = winnerId === String(player1?.id) ? player1 : winnerId === String(player2?.id) ? player2 : null;
-  const loser = winnerId === String(player1?.id) ? player2 : winnerId === String(player2?.id) ? player1 : null;
+  // Determine winner/loser from outcome string like "2-0"
+  const parseOutcome = (outcome) => {
+    if (!outcome) return null;
+    const parts = String(outcome).split('-');
+    if (parts.length !== 2) return null;
+    const wins1 = Number(parts[0]);
+    const wins2 = Number(parts[1]);
+    if (!Number.isFinite(wins1) || !Number.isFinite(wins2)) return null;
+    if (wins1 === wins2) return null;
+    return {
+      wins1,
+      wins2,
+      winnerKey: wins1 > wins2 ? 'player1' : 'player2',
+    };
+  };
+
+  const outcomeInfo = parseOutcome(matchup.outcome);
+  const winner =
+    outcomeInfo?.winnerKey === 'player1'
+      ? player1
+      : outcomeInfo?.winnerKey === 'player2'
+      ? player2
+      : null;
+  const loser =
+    outcomeInfo?.winnerKey === 'player1'
+      ? player2
+      : outcomeInfo?.winnerKey === 'player2'
+      ? player1
+      : null;
 
   return (
     <div className={`match ${showResult ? 'match-complete' : ''}`}>
