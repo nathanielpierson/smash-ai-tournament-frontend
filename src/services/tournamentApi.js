@@ -16,6 +16,21 @@ const BACKEND_ORIGIN =
   import.meta.env.VITE_API_ORIGIN ??
   (import.meta.env.PROD ? PRODUCTION_ORIGIN : "http://localhost:3000");
 
+/**
+ * Normalize a bare filename for case-sensitive servers (e.g. Sheik A/B).
+ * - Lowercase
+ * - Replace spaces with hyphens
+ * - Fix common misspelling "shiek" -> "sheik"
+ */
+function normalizeIconFilename(filename) {
+  let normalized = filename.replace(/\s+/g, "-").toLowerCase();
+
+  // Fix common typo specifically for Sheik: "shiek" -> "sheik"
+  normalized = normalized.replace(/shiek/g, "sheik");
+
+  return normalized.replace(/^\.?\/*/, "");
+}
+
 /** Resolve image URL; prepend backend origin if relative or bare filename. */
 export function resolveImageUrl(url) {
   if (!url || typeof url !== "string") return null;
@@ -33,7 +48,8 @@ export function resolveImageUrl(url) {
 
   // Bare filename or relative path like "slippery-kong-icon.png"
   // Treat as hosted at the backend origin root in production.
-  return `${BACKEND_ORIGIN}/${trimmed.replace(/^\.?\//, "")}`;
+  const path = normalizeIconFilename(trimmed);
+  return `${BACKEND_ORIGIN}/${path}`;
 }
 
 export const fetchTournamentData = async () => {
