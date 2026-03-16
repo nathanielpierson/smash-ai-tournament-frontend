@@ -114,6 +114,14 @@ function TournamentBracket() {
       <div className="tournament-loading">
         <div className="spinner"></div>
         <p>Loading tournament data...</p>
+        {import.meta.env.PROD && (
+          <p className="tournament-loading-note">
+            Note: loading on this website may take a couple minutes and/or need to be tried multiple
+            times. I am a junior software developer looking to enter into the field so I can actually
+            pay for backend services that run in a timely manner. If you're interested in helping fund
+            the project, you can contact me at nathanielepierson@gmail.com.
+          </p>
+        )}
       </div>
     );
   }
