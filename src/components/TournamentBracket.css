@@ -139,6 +139,27 @@
   background: #5568d3;
 }
 
+.tournament-loading-note {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #444;
+  text-align: left;
+  background: #f9f9ff;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+@media (max-width: 768px) {
+  .tournament-loading-note {
+    max-width: 100%;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 768px) {
   .tournament-bracket {
     padding: 15px;
